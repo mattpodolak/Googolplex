@@ -11,7 +11,7 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 
 LANGUAGE = "english"
-SENTENCES_COUNT = 40
+SENTENCES_COUNT = 10
 
 if __name__ == "__main__":
     url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/potato"
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     #create new shorter summaries
     parser = PlaintextParser.from_file("summarized.txt", Tokenizer(LANGUAGE))
-    SENTENCES_COUNT = 2
+    SENTENCES_COUNT = 3
 
     #define summarizers for the summarizing methods being used
     summarizer_Lsa = Lsa(stemmer)

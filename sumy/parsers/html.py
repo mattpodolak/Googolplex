@@ -36,15 +36,30 @@ class HtmlParser(DocumentParser):
     def __init__(self, html_content, tokenizer, url=None):
         super(HtmlParser, self).__init__(tokenizer)
         self._article = Article(html_content, url)
+        print(self._article.main_text[0])
+        del self._article.main_text[0]
         self.paragraph = 0;
         for paragraph in self._article.main_text:
             self.paragraph+=1
-        print(self.paragraph)
+           # if self.paragraph >= self.paragraph*0.3//10:
+                #del self._article.main_text[self.paragraph]
+        print(self._article.main_text)
+        self.paragraph = self.paragraph*0.3//10
+        if self.paragraph <= 1:
+            self.paragraph = 2
+
+    def count_paragraph(self, i):
+        i += 1
+        return i
 
     @cached_property
     def significant_words(self):
         words = []
+        i = 0
         for paragraph in self._article.main_text:
+            i = self.count_paragraph(i)
+            if(i == self.paragraph):
+                break
             for text, annotations in paragraph:
                 if self._contains_any(annotations, *self.SIGNIFICANT_TAGS):
                     words.extend(self.tokenize_words(text))
@@ -57,7 +72,11 @@ class HtmlParser(DocumentParser):
     @cached_property
     def stigma_words(self):
         words = []
+        i = 0
         for paragraph in self._article.main_text:
+            i = self.count_paragraph(i)
+            if(i == self.paragraph):
+                break
             for text, annotations in paragraph:
                 if self._contains_any(annotations, "a", "strike", "s"):
                     words.extend(self.tokenize_words(text))
