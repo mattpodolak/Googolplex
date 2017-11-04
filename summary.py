@@ -62,17 +62,25 @@ if __name__ == "__main__":
     #summary_Edmundson = summarizer_Edmundson(parser.document, SENTENCES_COUNT)
 
     #print summaries
+    summary_Lsa_trim = []
     for sentence in summary_Lsa:
         #trim off super short - likely a few word sentences
         if len(sentence._text)>20:
             print(sentence)
+            summary_Lsa_trim.append(sentence)
+
     print('\n')
+    summary_LexRank_trim = []
     for sentence in summary_LexRank:
         #trim off super short - likely a few word sentences
         if len(sentence._text)>20:
             print(sentence)
+            summary_LexRank_trim.append(sentence)
+
     print('\n')
+    summary_Edmundson_trim = []
     for sentence in summary_Edmundson:
         #trim off super short - likely a few word sentences
         if len(sentence._text)>20:
             print(sentence)
+            summary_Edmundson_trim.append(sentence)
