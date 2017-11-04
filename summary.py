@@ -29,9 +29,10 @@ if __name__ == "__main__":
     summarizer_LexRank = LexRank()
     summary_LexRank = summarizer_LexRank(parser.document, SENTENCES_COUNT)
 
-    summarizer_Edmundson = Edmundson(stemmer)
-    summarizer_Edmundson.stop_words = get_stop_words(LANGUAGE)
-    summary_Edmundson = summarizer_Edmundson(parser.document, SENTENCES_COUNT)
+    #untested code
+    #summarizer_Edmundson = Edmundson(stemmer)
+    #summarizer_Edmundson.stop_words = get_stop_words(LANGUAGE)
+    #summary_Edmundson = summarizer_Edmundson(parser.document, SENTENCES_COUNT)
 
     for sentence in summary_Lsa:
         print(sentence)
