@@ -63,15 +63,16 @@ if __name__ == "__main__":
 
     #print summaries
     for sentence in summary_Lsa:
-        count=0
-        for words in sentence:
-            count+=1
-        print(count)
-        print(sentence)
-        print(len(sentence))
+        #trim off super short - likely a few word sentences
+        if len(sentence._text)>20:
+            print(sentence)
     print('\n')
     for sentence in summary_LexRank:
-        print(sentence)
+        #trim off super short - likely a few word sentences
+        if len(sentence._text)>20:
+            print(sentence)
     print('\n')
     for sentence in summary_Edmundson:
-        print(sentence)
+        #trim off super short - likely a few word sentences
+        if len(sentence._text)>20:
+            print(sentence)

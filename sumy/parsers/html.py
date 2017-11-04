@@ -63,7 +63,8 @@ class HtmlParser(DocumentParser):
             del self._article.main_text[diff+self.correct_paragraph_ct-1]
             diff-=1
 
-        print(self._article.main_text)
+        #troubleshoot
+        #print(self._article.main_text)
 
     @cached_property
     def significant_words(self):
