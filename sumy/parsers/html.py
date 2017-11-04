@@ -39,6 +39,7 @@ class HtmlParser(DocumentParser):
         self.paragraph = 0;
         for paragraph in self._article.main_text:
             self.paragraph+=1
+        print(self.paragraph)
 
     @cached_property
     def significant_words(self):
