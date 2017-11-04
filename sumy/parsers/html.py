@@ -41,13 +41,20 @@ class HtmlParser(DocumentParser):
         self.desired_ct = 2
         self.paragraph_ct = 0
         self.correct_paragraph_ct = 0
+
+        #count paragraphs
         for paragraph in self._article.main_text:
-            self.paragraph_ct+=1
+            #check if paragraph is longer than 6 words
+            if len(self._article.main_text[self.paragraph_ct]) >=6:
+                self.paragraph_ct+=1
+            else:
+                #trim short paragraphs that will skew data
+                del self._article.main_text[self.paragraph_ct]
 
         #check if a lot of paragraphs, usually intro material will be in the first couple paragraphs
         if self.paragraph_ct > self.desired_ct:
             #calculate number of paragraphs to use
-            self.correct_paragraph_ct = self.paragraph_ct * 0.5 // 10
+            self.correct_paragraph_ct = int(self.paragraph_ct * 0.5 // 10)
             #if correction results in too few paragraphs - opt to use desired number
             if self.correct_paragraph_ct <= 1:
                 self.correct_paragraph_ct = self.desired_ct
@@ -57,17 +64,15 @@ class HtmlParser(DocumentParser):
 
         #delete excess paragraphs
         diff = self.paragraph_ct - self.correct_paragraph_ct
-        for ct in range(diff):
-            del self._article.main_text[ct+self.correct_paragraph_ct]
+        while diff > 0:
+            del self._article.main_text[diff+self.correct_paragraph_ct-1]
+            diff-=1
 
-            #testing purposes
-            print(self._article.main_text[ct+self.correct_paragraph_ct])
         print(self._article.main_text)
 
     @cached_property
     def significant_words(self):
         words = []
-        i = 0
         for paragraph in self._article.main_text:
             for text, annotations in paragraph:
                 if self._contains_any(annotations, *self.SIGNIFICANT_TAGS):
@@ -81,7 +86,6 @@ class HtmlParser(DocumentParser):
     @cached_property
     def stigma_words(self):
         words = []
-        i = 0
         for paragraph in self._article.main_text:
             for text, annotations in paragraph:
                 if self._contains_any(annotations, "a", "strike", "s"):
