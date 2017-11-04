@@ -30,11 +30,17 @@ if __name__ == "__main__":
     summary_LexRank = summarizer_LexRank(parser.document, SENTENCES_COUNT)
 
     summarizer_Edmundson = Edmundson(stemmer)
-    summarizer_Edmundson.stop_words = get_stop_words(LANGUAGE)
+    summarizer_Edmundson.null_words = get_stop_words(LANGUAGE)
+    summarizer_Edmundson.bonus_words = parser.significant_words
+    summarizer_Edmundson.stigma_words = parser.stigma_words
+
     summary_Edmundson = summarizer_Edmundson(parser.document, SENTENCES_COUNT)
 
     for sentence in summary_Lsa:
         print(sentence)
     print('\n')
     for sentence in summary_LexRank:
+        print(sentence)
+    print('\n')
+    for sentence in summary_Edmundson:
         print(sentence)
