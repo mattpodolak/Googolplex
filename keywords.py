@@ -5,24 +5,26 @@ from itertools import product
 from nltk.corpus import wordnet as wn
 from collections import Counter
 
-def similarity_test(sentence_raw, token_sample):
-    # tokenize+tag raw sentence and token
-    sentence = nltk.pos_tag((nltk.word_tokenize(sentence_raw)))
-    token = nltk.pos_tag(nltk.word_tokenize(token_sample))
+
 
 def main():
-
-    # temp sentence
-    temp_s = """sometimes rain is good but i like summer better decent"""
-
-    # tokenize
-    token_s = nltk.word_tokenize(temp_s)
 
     # tagged
     #tagged_s = nltk.pos_tag(token_s)
     # lemmatizer
     #lemmatizer = WordNetLemmatizer()
     #tokens = lemmatizer.lemmatize(token_s)
+    #print('tags:', tagged_s)
+    #print('lemma:', tokens)
+
+    # probablity tests
+    #print('test:', nltk.pos_tag(nltk.word_tokenize('poop')))
+
+    # temp sentence
+    temp_s = """what does apple pie taste like"""
+
+    # tokenize
+    token_s = nltk.word_tokenize(temp_s)
 
     # remove stopwords
     stopWords = set(stopwords.words('english'))
@@ -35,38 +37,16 @@ def main():
     print('tokens:', token_s)
     print('filtered:', filtered_tokens)
 
-    #print('tags:', tagged_s)
-    #print('lemma:', tokens)
-
-    # probablity tests
-    #print('test:', nltk.pos_tag(nltk.word_tokenize('poop')))
-
-    #
-    prob_list = []
-    comp_list = []
-    top3 = []
-    for words, keys in product(token_s, filtered_tokens):
-        synwords = wn.synsets(word)
-        synkeys = wn.synsets(keys)
-        for sensew, sensek in product(synwords, synkeys):
-            siml = wn.wup_similarity(sensew, sensek)
-            if siml != None:
-                prob_list.append(siml)
-                comp_list.append(tuple((words, keys, sensek, sensew)))
-                #comp_list.append(tuple((synwords, synkeys)))
-                #comp_list.append(tuple((sensew, sensek)))
-                #similarity_list.append((siml, tuple((synwords, synkeys))))
-
-    curr_max = 0
-    # pop max prob then pop index of max 3 times
-    for i in range(min(3, len(filtered_tokens))):
-        curr_max = prob_list.index(max(prob_list))
-        top3.append(tuple((prob_list[curr_max], comp_list[curr_max])))
-        prob_list.pop(curr_max)
-        comp_list.pop(curr_max)
-
-    for item in top3:
-        print(item)
-
+    filtered_iter = iter(filtered_tokens)
+    for i in range(len(filtered_tokens)):
+        total = 0
+        elem = next(filtered_iter)
+        allsyns1 = set(ss for word in token_s for ss in wn.synsets(word))
+        allsyns2 = set(ss for word in elem for ss in wn.synsets(word))
+        full_list = [(wn.wup_similarity(s1, s2) or 0, s1, s2) for s1, s2 in product(allsyns1, allsyns2)]
+        score_list = iter(full_list)
+        for j in range(len(full_list)):
+            total += float(next(score_list)[0])
+        print('word:', elem, 'weighted avg:', total/len(full_list))
 
 main()
