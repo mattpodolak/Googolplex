@@ -50,13 +50,14 @@ def main():
         synkeys = wn.synsets(keys)
         for sensew, sensek in product(synwords, synkeys):
             siml = wn.wup_similarity(sensew, sensek)
-            if siml != None and siml not in prob_list:
+            if siml != None:
                 prob_list.append(siml)
                 comp_list.append(tuple((words, keys, sensek, sensew)))
                 #comp_list.append(tuple((synwords, synkeys)))
                 #comp_list.append(tuple((sensew, sensek)))
                 #similarity_list.append((siml, tuple((synwords, synkeys))))
 
+    curr_max = 0
     # pop max prob then pop index of max 3 times
     for i in range(min(3, len(filtered_tokens))):
         curr_max = prob_list.index(max(prob_list))
