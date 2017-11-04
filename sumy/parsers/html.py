@@ -11,7 +11,6 @@ from .parser import DocumentParser
 
 class HtmlParser(DocumentParser):
     """Parser of text from HTML format into DOM."""
-
     SIGNIFICANT_TAGS = (
         "h1", "h2", "h3",
         "b", "strong",
@@ -37,6 +36,9 @@ class HtmlParser(DocumentParser):
     def __init__(self, html_content, tokenizer, url=None):
         super(HtmlParser, self).__init__(tokenizer)
         self._article = Article(html_content, url)
+        self.paragraph = 0;
+        for paragraph in self._article.main_text:
+            self.paragraph+=1
 
     @cached_property
     def significant_words(self):
@@ -82,7 +84,7 @@ class HtmlParser(DocumentParser):
         # "s", "samp", "strike", "strong", "sub", "sup", "tt", "u", "ul", "var",
 
         annotated_text = self._article.main_text
-        print('WOWOOWOW')
+
         paragraphs = []
         for paragraph in annotated_text:
             sentences = []
