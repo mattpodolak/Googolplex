@@ -44,26 +44,6 @@ class HtmlParser(DocumentParser):
 
         #count paragraphs
         for paragraph in self._article.main_text:
-            #sections of text within paragraphs
-            text_ct = 0
-            for text in paragraph:
-                words_ct = 0
-                #sentences within text sections - count words in each sentence
-                for words in text:
-                    try:
-                        if len(words) > 3 and len(words) < 18:
-                            # trim short sentences that will skew data between 3 and 18 characters
-                            # greater than 3 excludes most annotative tags - should add a not equals comparison to
-                            # all the annotative tags listed in readable.py of breadability
-                            del self._article.main_text[self.paragraph_ct][]
-                    except:
-                        #typeError can happen for some tags
-                        print('typeError')
-                        continue
-                    words_ct+=1
-                text_ct+=1
-            print(len(paragraph))
-            print(paragraph)
             self.paragraph_ct+=1
 
         #check if a lot of paragraphs, usually intro material will be in the first couple paragraphs

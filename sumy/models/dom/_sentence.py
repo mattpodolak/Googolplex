@@ -38,7 +38,6 @@ class Sentence(object):
         return self._text
 
     def __repr__(self):
-        return to_string("<%s: %s>") % (
-            "Heading" if self._is_heading else "Sentence",
-            self.__str__()
+        return self.__str__()
         )
+

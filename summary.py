@@ -9,6 +9,7 @@ from sumy.summarizers.edmundson import EdmundsonSummarizer as Edmundson
 from sumy.summarizers.lex_rank import LexRankSummarizer as LexRank
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
+from sumy.models.dom._sentence import Sentence
 
 LANGUAGE = "english"
 SENTENCES_COUNT = 4
@@ -62,7 +63,12 @@ if __name__ == "__main__":
 
     #print summaries
     for sentence in summary_Lsa:
+        count=0
+        for words in sentence:
+            count+=1
+        print(count)
         print(sentence)
+        print(len(sentence))
     print('\n')
     for sentence in summary_LexRank:
         print(sentence)
