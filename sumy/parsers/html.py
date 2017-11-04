@@ -36,17 +36,32 @@ class HtmlParser(DocumentParser):
     def __init__(self, html_content, tokenizer, url=None):
         super(HtmlParser, self).__init__(tokenizer)
         self._article = Article(html_content, url)
-        print(self._article.main_text[0])
-        del self._article.main_text[0]
-        self.paragraph = 0;
+
+        #count number of paragraphs on page
+        self.desired_ct = 2
+        self.paragraph_ct = 0
+        self.correct_paragraph_ct = 0
         for paragraph in self._article.main_text:
-            self.paragraph+=1
-           # if self.paragraph >= self.paragraph*0.3//10:
-                #del self._article.main_text[self.paragraph]
+            self.paragraph_ct+=1
+
+        #check if a lot of paragraphs, usually intro material will be in the first couple paragraphs
+        if self.paragraph_ct > self.desired_ct:
+            #calculate number of paragraphs to use
+            self.correct_paragraph_ct = self.paragraph_ct * 0.5 // 10
+            #if correction results in too few paragraphs - opt to use desired number
+            if self.correct_paragraph_ct <= 1:
+                self.correct_paragraph_ct = self.desired_ct
+        #if less than desired and more than 0, already at correct paragraph count
+        elif self.paragraph_ct >0:
+            self.correct_paragraph_ct = self.paragraph_ct
+
+        #delete excess paragraphs
+        diff = self.paragraph_ct - self.correct_paragraph_ct
+        for ct in range(diff):
+            del self._article.main_text[ct+self.correct_paragraph_ct]
+            #testing purposes
+            print(self._article.main_text[ct+self.correct_paragraph_ct])
         print(self._article.main_text)
-        self.paragraph = self.paragraph*0.3//10
-        if self.paragraph <= 1:
-            self.paragraph = 2
 
     def count_paragraph(self, i):
         i += 1
@@ -58,7 +73,7 @@ class HtmlParser(DocumentParser):
         i = 0
         for paragraph in self._article.main_text:
             i = self.count_paragraph(i)
-            if(i == self.paragraph):
+            if(i == self.paragraph_ct):
                 break
             for text, annotations in paragraph:
                 if self._contains_any(annotations, *self.SIGNIFICANT_TAGS):
@@ -75,7 +90,7 @@ class HtmlParser(DocumentParser):
         i = 0
         for paragraph in self._article.main_text:
             i = self.count_paragraph(i)
-            if(i == self.paragraph):
+            if(i == self.paragraph_ct):
                 break
             for text, annotations in paragraph:
                 if self._contains_any(annotations, "a", "strike", "s"):
