@@ -1,31 +1,13 @@
 import nltk
-from nltk.stem import*
 from nltk.corpus import stopwords
 from itertools import product
 from nltk.corpus import wordnet as wn
-from collections import Counter
-
-
 
 def main():
-
-    # tagged
-    #tagged_s = nltk.pos_tag(token_s)
-    # lemmatizer
-    #lemmatizer = WordNetLemmatizer()
-    #tokens = lemmatizer.lemmatize(token_s)
-    #print('tags:', tagged_s)
-    #print('lemma:', tokens)
-
-    # probablity tests
-    #print('test:', nltk.pos_tag(nltk.word_tokenize('poop')))
-
     # temp sentence
     temp_s = """what does apple pie taste like"""
-
     # tokenize
     token_s = nltk.word_tokenize(temp_s)
-
     # remove stopwords
     stopWords = set(stopwords.words('english'))
     filtered_tokens = [word for word in token_s if word not in stopWords]
