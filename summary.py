@@ -18,7 +18,6 @@ if __name__ == "__main__":
     url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/potato"
     parser = HtmlParser.from_url(url, Tokenizer(LANGUAGE))
 
-    print(parser)
     # or for plain text files
     # parser = PlaintextParser.from_file("document.txt", Tokenizer(LANGUAGE))
     stemmer = Stemmer(LANGUAGE)
@@ -46,7 +45,7 @@ if __name__ == "__main__":
     f.close()
 
     #create new shorter summaries
-    parser = PlaintextParser.from_file("document.txt", Tokenizer(LANGUAGE))
+    parser = PlaintextParser.from_file("summarized.txt", Tokenizer(LANGUAGE))
     SENTENCES_COUNT = 3
 
     #define summarizers for the summarizing methods being used
