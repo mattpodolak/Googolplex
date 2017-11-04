@@ -59,22 +59,16 @@ class HtmlParser(DocumentParser):
         diff = self.paragraph_ct - self.correct_paragraph_ct
         for ct in range(diff):
             del self._article.main_text[ct+self.correct_paragraph_ct]
+
             #testing purposes
             print(self._article.main_text[ct+self.correct_paragraph_ct])
         print(self._article.main_text)
-
-    def count_paragraph(self, i):
-        i += 1
-        return i
 
     @cached_property
     def significant_words(self):
         words = []
         i = 0
         for paragraph in self._article.main_text:
-            i = self.count_paragraph(i)
-            if(i == self.paragraph_ct):
-                break
             for text, annotations in paragraph:
                 if self._contains_any(annotations, *self.SIGNIFICANT_TAGS):
                     words.extend(self.tokenize_words(text))
@@ -89,9 +83,6 @@ class HtmlParser(DocumentParser):
         words = []
         i = 0
         for paragraph in self._article.main_text:
-            i = self.count_paragraph(i)
-            if(i == self.paragraph_ct):
-                break
             for text, annotations in paragraph:
                 if self._contains_any(annotations, "a", "strike", "s"):
                     words.extend(self.tokenize_words(text))
