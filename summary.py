@@ -60,11 +60,13 @@ def html_inj(input, html, id):
     #load the html
     with open("./templates/index.html") as inf:
         txt = inf.read()
-        soup = BS(txt)
-    soup.find(html, {"id": id}).insert(1, input)
+        soup = BS(txt, 'html.parser')
+    soup.find(html, {"id": id}).replace_with('<'+html+' id="'+id+'">'+input+'</'+html+'>')
 
     with open("./templates/index.html", "w") as outf:
         outf.write(str(soup))
+
+    main()
 
 @app.route('/keywordCall', methods=['POST'])
 def keywordCall():
@@ -130,7 +132,7 @@ def keyword(input):
 
         # prints top 3
     print('TOP:', top_3)
-    query(top_3)
+    #inject top keywords into html
     try:
         html_inj(top_3[2], 'h4', 'keyword3-h4')
         html_inj(top_3[1], 'h4', 'keyword2-h4')
@@ -141,7 +143,8 @@ def keyword(input):
             html_inj(top_3[0], 'h4', 'keyword1-h4')
         except:
             html_inj(top_3[0], 'h4', 'keyword1-h4')
-
+    #find websites for top keywords
+    query(top_3)
 def query(keywords):
     #checks wikipedia for an article about the keyword
     #uses beautiful soup to see if the following string is in the html
@@ -158,13 +161,13 @@ def query(keywords):
         if not string == "Wikipedia does not have an article with this exact name.":
             #inject summary
             if count == 0:
-                html_inj(summary(urls[count]), 'p', 'keyword1-p')
+                html_inj(str(summary(urls[count])), 'p', 'keyword1-p')
                 print(count)
             elif count == 1:
-                html_inj(summary(urls[count]), 'p', 'keyword2-p')
+                html_inj(str(summary(urls[count])), 'p', 'keyword2-p')
                 print(count)
             elif count == 2:
-                html_inj(summary(urls[count]), 'p', 'keyword3-p')
+                html_inj(str(summary(urls[count])), 'p', 'keyword3-p')
                 print(count)
 
         elif count == 0:
