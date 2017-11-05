@@ -22,13 +22,13 @@
         </div>
 
         <div class="jumbotron">
-             <form class="form-search">
+             <form class="form-search" action="{{ url_for('keywordCall') }}" method="post">
                  <div class = "logo-img">
                      <img class ="logo-img2" src="{{url_for('static', filename='randlogo3.png')}}" />
                  </div>
                  <label for="inputSearch" class="sr-only">Search for a topic</label>
-                 <input type="search" name="inputSearch" id="inputSearch" class="form-control" placeholder="Search for a topic" required autofocus>
-            <button id="btnSearch" class="btn btn-lg btn-primary btn-block" type="button">Search</button>
+                 <input type="text" name="inputSearch" id="inputSearch" class="form-control" placeholder="Search for a topic" required autofocus>
+                 <input type="submit" id="btnSearch" class="btn btn-lg btn-primary btn-block" >
              </form>
         </div>
 
@@ -63,6 +63,14 @@
         padding-right:8px;
         margin: 0 auto;
         margin-top: 10px;
+        cursor: pointer !important;
+    }
+
+    #btnWrap{
+        margin-top: 20px;
+    }
+    #btnWrap:hover{
+        cursor: pointer !important;
     }
     .form-search{
         margin-top:40px;
@@ -84,7 +92,7 @@
 
     .jumbotron{
         padding-top:30px;
-        margin-top:50px;
+        margin-top:38px;
         box-shadow: 3px 3px 3px #888888 !important;
     }
     .form-search{
