@@ -77,6 +77,11 @@ def keyword(input):
     # ini print
     print('tokens:', token_s)
     print('filtered:', filtered_tokens)
+    #dummy var
+    prob_list = []
+    comp_list = []
+    top_3 = []
+
     # loops through for comparisons
     filtered_iter = iter(filtered_tokens)
     for i in range(len(filtered_tokens)):
@@ -89,6 +94,24 @@ def keyword(input):
         for j in range(len(full_list)):
             total += float(next(score_list)[0])
         print('word:', elem, 'weighted avg:', total/len(full_list))
+
+        # store dummy
+        prob_list.append(float(total / len(full_list)))
+        comp_list.append(elem)
+
+        # grab min(3, #of elements)
+    for i in range(min(3, len(prob_list))):
+        curr_max = prob_list.index(max(prob_list))
+        top_3.append(comp_list[curr_max])
+
+        prob_list.pop(curr_max)
+        comp_list.pop(curr_max)
+
+        # prints top 3
+    print('TOP:', top_3)
+    #html_inj(top_3[0],html_id)
+   # html_inj(top_3[1], html_id)
+    #html_inj(top_3[2], html_id)
 
 if __name__ == "__main__":
     app.run()
