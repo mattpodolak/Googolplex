@@ -172,12 +172,15 @@ def query(keywords):
                 print(count)
 
         elif count == 0:
+            print("No articles found")
             html_inj('No articles found', 'p', 'keyword1-p')
             print(count)
         elif count == 1:
+            print("No articles found")
             html_inj('No articles found', 'p', 'keyword2-p')
             print(count)
         elif count == 2:
+            print("No articles found")
             html_inj('No articles found', 'p', 'keyword3-p')
             print(count)
         count +=1
