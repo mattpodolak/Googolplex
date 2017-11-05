@@ -12,7 +12,7 @@ from sumy.utils import get_stop_words
 from sumy.evaluation.rouge import rouge_n, rouge_1, rouge_2
 from sumy.models.dom import Sentence, Paragraph, ObjectDocumentModel
 import nltk
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords as stpwords
 from itertools import product
 from nltk.corpus import wordnet as wn
 from flask import Flask, render_template, request, json
@@ -58,20 +58,20 @@ def max_r_value(Lsa_eval, Ed_eval, Lex_eval, ref):
 
 def html_inj(input, html, id):
     #load the html
-    with open("index.html") as inf:
+    with open("./templates/index.html") as inf:
         txt = inf.read()
         soup = BS(txt)
-    soup.find(html, {"id": id}).insert(input)
+    soup.find(html, {"id": id}).insert(1, input)
 
-    with open("index.html", "w") as outf:
+    with open("./templates/index.html", "w") as outf:
         outf.write(str(soup))
 
 @app.route('/keywordCall', methods=['POST'])
 def keywordCall():
     # read the posted values from the UI
-    _input = request.form['inputSearch']
-    print(_input)
-    keyword(str(_input))
+    input = request.form['inputSearch']
+    #print(input)
+    keyword(str(input))
     return render_template('index.html')
 
 def keyword(input):
@@ -82,7 +82,8 @@ def keyword(input):
     # tokenize
     token_s = nltk.word_tokenize(temp_s)
     # remove stopwords
-    stopWords = set(stopwords.words('english'))
+    stopWords = set(stpwords.words('english'))
+    print(stopWords)
     filtered_tokens = [word for word in token_s if word not in stopWords]
     filtered_tokens = []
     for word in token_s:
@@ -130,9 +131,17 @@ def keyword(input):
         # prints top 3
     print('TOP:', top_3)
     #query(top_3)
-    #html_inj(top_3[0], 'h4', 'keyword1-h4')
-    #html_inj(top_3[1], 'h4', 'keyword2-h4')
-    #html_inj(top_3[2], 'h4', 'keyword3-h4')
+    try:
+        html_inj(top_3[2], 'h4', 'keyword3-h4')
+        html_inj(top_3[1], 'h4', 'keyword2-h4')
+        html_inj(top_3[0], 'h4', 'keyword1-h4')
+    except:
+        try:
+            html_inj(top_3[1], 'h4', 'keyword2-h4')
+            html_inj(top_3[0], 'h4', 'keyword1-h4')
+        except:
+            html_inj(top_3[0], 'h4', 'keyword1-h4')
+
 def query(keywords):
     #checks wikipedia for an article about the keyword
     #uses beautiful soup to see if the following string is in the html
