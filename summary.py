@@ -36,10 +36,10 @@ def calc_value(eval_sentences, ref_sentences):
     n_2 = rouge_2(eval_sentences, ref_sentences)
     n_3 = rouge_n(eval_sentences, ref_sentences, 3)
 
-    print('n1 '+ str(n_1) +'\n')
-    print('n2 ' + str(n_2) + '\n')
-    print('n3 ' + str(n_3) + '\n')
-    print('avg ' + str((n_1+n_2+n_3)/3))
+    #print('n1 '+ str(n_1) +'\n')
+    #print('n2 ' + str(n_2) + '\n')
+    #print('n3 ' + str(n_3) + '\n')
+    #print('avg ' + str((n_1+n_2+n_3)/3))
 
     return (n_1+n_2+n_3)/3
 
@@ -54,7 +54,7 @@ def max_r_value(Lsa_eval, Ed_eval, Lex_eval, ref):
         if list[i] > max:
             max = list[i]
             maxIndex = i
-    print("Maximum average Rouge test value " + str(max))
+    #print("Maximum average Rouge test value " + str(max))
     return maxIndex
 
 def html_inj(input, html, id):
@@ -204,7 +204,7 @@ def summary(article_url):
                         ref_sentences.append(sentences)
                 except TypeError:
                     # catch type errors caused by annotated text ie h1, b, etc
-                    print("typeError")
+                    print("Calculating...")
                     continue
     trim_ref_sentences.extend(Sentence(s, Tokenizer(LANGUAGE)) for s in ref_sentences)
 
@@ -225,7 +225,9 @@ def summary(article_url):
     summarizer_Edmundson.bonus_words = parser.significant_words
     summarizer_Edmundson.stigma_words = parser.stigma_words
     summary_Edmundson = summarizer_Edmundson(parser.document, SENTENCES_COUNT)
-
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print('\n')
+    print('Lsa summary\n')
     # print summaries
     summary_Lsa_trim = []
     for sentence in summary_Lsa:
@@ -236,8 +238,9 @@ def summary(article_url):
 
     # calc rouge_n scores
     calc_value(summary_Lsa_trim, trim_ref_sentences)
-
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print('\n')
+    print('LexRank summary\n')
     summary_LexRank_trim = []
     for sentence in summary_LexRank:
         # trim off super short - likely a few word sentences
@@ -247,8 +250,9 @@ def summary(article_url):
 
     # calc rouge_n scores
     calc_value(summary_LexRank_trim, trim_ref_sentences)
-
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print('\n')
+    print('Edmundson summary\n')
     summary_Edmundson_trim = []
     for sentence in summary_Edmundson:
         # trim off super short - likely a few word sentences
@@ -258,7 +262,8 @@ def summary(article_url):
 
     # calc rouge_n scores
     calc_value(summary_Edmundson_trim, trim_ref_sentences)
-
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print('\n')
     # returns index of max 0=Ed, 1=Lsa, 2=Lex
     models = {0: "Edmundson Model", 1: "Lsa Model", 2: "LexRank Model"}
     best_summary = max_r_value(summary_Lsa_trim, summary_LexRank_trim, summary_Edmundson_trim, trim_ref_sentences)
