@@ -32,13 +32,19 @@ if __name__ == "__main__":
     #url = "http://www.encyclopedia.com/earth-and-environment/atmosphere-and-weather/atmospheric-and-space-sciences-atmosphere/air"
     parser = HtmlParser.from_url(url, Tokenizer(LANGUAGE))
 
+    #create a list of reference sentences to calculate ROUGE_N scores
     ref_sentences = []
     for paragraph in parser._article.main_text:
-        for sentence in paragraph:
-            #trim off super short - likely a few word sentences
-            if len(sentence._text)>20:
-                print(sentence)
-                ref_sentences.append(sentence)
+        for sections in paragraph:
+            for sentences in sections:
+                try:
+                    if len(sentences) > 35:
+                        # trim off super short - likely a few word sentences
+                        ref_sentences.append(sentences)
+                except TypeError:
+                    #catch type errors caused by annotated text ie h1, b, etc
+                    print("typeError")
+                    continue
 
     # or for plain text files
     # parser = PlaintextParser.from_file("document.txt", Tokenizer(LANGUAGE))
@@ -92,6 +98,9 @@ if __name__ == "__main__":
             print(sentence)
             summary_Lsa_trim.append(sentence)
 
+    #calc rouge_n scores
+    calc_value(summary_Lsa_trim, ref_sentences)
+
     print('\n')
     summary_LexRank_trim = []
     for sentence in summary_LexRank:
@@ -100,6 +109,9 @@ if __name__ == "__main__":
             print(sentence)
             summary_LexRank_trim.append(sentence)
 
+    #calc rouge_n scores
+    calc_value(summary_LexRank_trim, ref_sentences)
+
     print('\n')
     summary_Edmundson_trim = []
     for sentence in summary_Edmundson:
@@ -107,3 +119,6 @@ if __name__ == "__main__":
         if len(sentence._text)>20:
             print(sentence)
             summary_Edmundson_trim.append(sentence)
+
+    #calc rouge_n scores
+    calc_value(summary_Edmundson_trim, ref_sentences)
