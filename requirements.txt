@@ -1,0 +1,5 @@
+Flask
+gunicorn
+sumy
+python-3.4.2
+nltk
