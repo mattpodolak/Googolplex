@@ -104,7 +104,7 @@ def _recon_lcs(x, y):
     return recon_tuple
 
 
-def rouge_n(evaluated_sentences, reference_sentences, n=2):
+def rouge_n(evaluated_sentences, reference_sentences, n):
     """
     Computes ROUGE-N of two text collections of sentences.
     Sourece: http://research.microsoft.com/en-us/um/people/cyl/download/

@@ -9,14 +9,37 @@ from sumy.summarizers.edmundson import EdmundsonSummarizer as Edmundson
 from sumy.summarizers.lex_rank import LexRankSummarizer as LexRank
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
-from sumy.models.dom._sentence import Sentence
+from sumy.evaluation.rouge import rouge_n, rouge_1, rouge_2
 
 LANGUAGE = "english"
 SENTENCES_COUNT = 4
 
+#calculate ROUGE_N values for n = 1, 2, 3
+def calc_value(eval_sentences, ref_sentences):
+    n_1 = rouge_1(eval_sentences, ref_sentences)
+    n_2 = rouge_2(eval_sentences, ref_sentences)
+    n_3 = rouge_n(eval_sentences, ref_sentences, 3)
+
+    print('n1 '+ str(n_1) +'\n')
+    print('n2 ' + str(n_2) + '\n')
+    print('n3 ' + str(n_3) + '\n')
+    print('avg ' + str((n_1+n_2+n_3)/3))
+
 if __name__ == "__main__":
     url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/potato"
+    #url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/cabbage"
+    #url = "http://www.encyclopedia.com/medicine/diseases-and-conditions/pathology/accident"
+    #url = "http://www.encyclopedia.com/earth-and-environment/atmosphere-and-weather/atmospheric-and-space-sciences-atmosphere/air"
     parser = HtmlParser.from_url(url, Tokenizer(LANGUAGE))
+
+    ref_sentences = []
+    for paragraph in parser._article.main_text:
+        for sentence in paragraph:
+            #trim off super short - likely a few word sentences
+            if len(sentence._text)>20:
+                print(sentence)
+                ref_sentences.append(sentence)
+
     # or for plain text files
     # parser = PlaintextParser.from_file("document.txt", Tokenizer(LANGUAGE))
     stemmer = Stemmer(LANGUAGE)
