@@ -18,6 +18,7 @@ from nltk.corpus import wordnet as wn
 from flask import Flask, render_template, request, json
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as BS
+import html5lib
 
 app = Flask(__name__)
 
@@ -35,10 +36,10 @@ def calc_value(eval_sentences, ref_sentences):
     n_2 = rouge_2(eval_sentences, ref_sentences)
     n_3 = rouge_n(eval_sentences, ref_sentences, 3)
 
-    #print('n1 '+ str(n_1) +'\n')
-    #print('n2 ' + str(n_2) + '\n')
-    #print('n3 ' + str(n_3) + '\n')
-    #print('avg ' + str((n_1+n_2+n_3)/3))
+    print('n1 '+ str(n_1) +'\n')
+    print('n2 ' + str(n_2) + '\n')
+    print('n3 ' + str(n_3) + '\n')
+    print('avg ' + str((n_1+n_2+n_3)/3))
 
     return (n_1+n_2+n_3)/3
 
@@ -58,13 +59,12 @@ def max_r_value(Lsa_eval, Ed_eval, Lex_eval, ref):
 
 def html_inj(input, html, id):
     #load the html
-    with open("./templates/index.html") as inf:
-        txt = inf.read()
-        soup = BS(txt, 'html.parser')
-    soup.find(html, {"id": id}).replace_with('&lt;'+html+' id="'+id+'">'+input+'</'+html+'>')
+    #with open("./templates/index.html") as inf:
+    #    txt = inf.read()
+    #    soup = BS(txt, 'html.parser')
+    #soup.find(html, {"id": id}).replace_with('<'+html+' id="'+id+'">'+input+'</'+html+'>')
 
-    print(soup.prettify(formatter=html))
-   # with open("./templates/index.html", "w") as outf:
+    #with open("./templates/index.html", "w") as outf:
     #    outf.write(str(soup))
 
     main()
@@ -86,7 +86,7 @@ def keyword(input):
     token_s = nltk.word_tokenize(temp_s)
     # remove stopwords
     stopWords = set(stpwords.words('english'))
-    #print(stopWords)
+    print(stopWords)
     filtered_tokens = [word for word in token_s if word not in stopWords]
     filtered_tokens = []
     for word in token_s:
@@ -182,7 +182,6 @@ def query(keywords):
             print(count)
         count +=1
 def summary(article_url):
-    text_file = open("storage.txt", "w")
     url = article_url
     #url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/potato"
     # url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/cabbage"
@@ -202,9 +201,8 @@ def summary(article_url):
                         ref_sentences.append(sentences)
                 except TypeError:
                     # catch type errors caused by annotated text ie h1, b, etc
-                    print("Calculating...")
+                    print("typeError")
                     continue
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     trim_ref_sentences.extend(Sentence(s, Tokenizer(LANGUAGE)) for s in ref_sentences)
 
     # or for plain text files
@@ -230,8 +228,6 @@ def summary(article_url):
     for sentence in summary_Lsa:
         # trim off super short - likely a few word sentences
         if len(sentence._text) > 20:
-            # write to storage
-            text_file.write(sentence)
             print(sentence)
             summary_Lsa_trim.append(sentence)
 
@@ -243,8 +239,6 @@ def summary(article_url):
     for sentence in summary_LexRank:
         # trim off super short - likely a few word sentences
         if len(sentence._text) > 20:
-            # write to storage
-            text_file.write(sentence)
             print(sentence)
             summary_LexRank_trim.append(sentence)
 
@@ -256,8 +250,6 @@ def summary(article_url):
     for sentence in summary_Edmundson:
         # trim off super short - likely a few word sentences
         if len(sentence._text) > 20:
-            # write to storage
-            text_file.write(sentence)
             print(sentence)
             summary_Edmundson_trim.append(sentence)
 
@@ -276,9 +268,6 @@ def summary(article_url):
         return summary_Lsa_trim
     elif(best_summary==2):
         return summary_LexRank_trim
-
-    text_file.close()
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
 if __name__ == "__main__":
     app.run()
