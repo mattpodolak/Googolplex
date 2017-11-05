@@ -1,4 +1,4 @@
 Flask
 gunicorn
 sumy
-python-3.4.2
+python-3.6.2
