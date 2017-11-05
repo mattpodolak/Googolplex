@@ -130,7 +130,7 @@ def keyword(input):
 
         # prints top 3
     print('TOP:', top_3)
-    #query(top_3)
+    query(top_3)
     try:
         html_inj(top_3[2], 'h4', 'keyword3-h4')
         html_inj(top_3[1], 'h4', 'keyword2-h4')
