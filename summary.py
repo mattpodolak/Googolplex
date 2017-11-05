@@ -91,7 +91,8 @@ def keyword(input):
     # ini print
     print('tokens:', token_s)
     print('filtered:', filtered_tokens)
-    #dummy var
+
+    # dummy var
     prob_list = []
     comp_list = []
     top_3 = []
@@ -101,19 +102,23 @@ def keyword(input):
     for i in range(len(filtered_tokens)):
         total = 0
         elem = next(filtered_iter)
+
+        # loops through phrase with each keyword
         allsyns1 = set(ss for word in token_s for ss in wn.synsets(word))
         allsyns2 = set(ss for word in elem for ss in wn.synsets(word))
         full_list = [(wn.wup_similarity(s1, s2) or 0, s1, s2) for s1, s2 in product(allsyns1, allsyns2)]
         score_list = iter(full_list)
+
+        # get avg score
         for j in range(len(full_list)):
             total += float(next(score_list)[0])
-        print('word:', elem, 'weighted avg:', total/len(full_list))
+        print('word:', elem, '| weighted avg:', total / len(full_list))
 
         # store dummy
         prob_list.append(float(total / len(full_list)))
         comp_list.append(elem)
 
-        # grab min(3, #of elements)
+    # grab min(3, #of elements)
     for i in range(min(3, len(prob_list))):
         curr_max = prob_list.index(max(prob_list))
         top_3.append(comp_list[curr_max])
@@ -121,12 +126,13 @@ def keyword(input):
         prob_list.pop(curr_max)
         comp_list.pop(curr_max)
 
+
         # prints top 3
-    #print('TOP:', top_3)
-    query(top_3)
-    html_inj(top_3[0], 'h4', 'keyword1-h4')
-    html_inj(top_3[1], 'h4', 'keyword2-h4')
-    html_inj(top_3[2], 'h4', 'keyword3-h4')
+    print('TOP:', top_3)
+    #query(top_3)
+    #html_inj(top_3[0], 'h4', 'keyword1-h4')
+    #html_inj(top_3[1], 'h4', 'keyword2-h4')
+    #html_inj(top_3[2], 'h4', 'keyword3-h4')
 def query(keywords):
     #checks wikipedia for an article about the keyword
     #uses beautiful soup to see if the following string is in the html
