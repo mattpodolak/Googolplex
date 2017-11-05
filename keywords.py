@@ -2,11 +2,14 @@ import nltk
 from nltk.corpus import stopwords
 from itertools import product
 from nltk.corpus import wordnet as wn
+from nltk import ngrams
 import timeit
 
 def main():
     # temp sentence
-    temp_s = """what does apple pie taste like"""
+    temp_s = """why is the sky so blue and not red"""
+    # timer
+    start = timeit.default_timer()
     # tokenize
     token_s = nltk.word_tokenize(temp_s)
     # remove stopwords
@@ -31,5 +34,8 @@ def main():
         for j in range(len(full_list)):
             total += float(next(score_list)[0])
         print('word:', elem, 'weighted avg:', total/len(full_list))
+
+    stop = timeit.default_timer()
+    print('time:', stop - start, 's')
 
 main()
