@@ -2,6 +2,7 @@ import nltk
 from nltk.corpus import stopwords
 from itertools import product
 from nltk.corpus import wordnet as wn
+import timeit
 
 def main():
     # temp sentence
@@ -15,10 +16,10 @@ def main():
     for word in token_s:
         if word not in stopWords:
             filtered_tokens.append(word)
-
+    # ini print
     print('tokens:', token_s)
     print('filtered:', filtered_tokens)
-
+    # loops through for comparisons
     filtered_iter = iter(filtered_tokens)
     for i in range(len(filtered_tokens)):
         total = 0
