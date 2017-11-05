@@ -18,12 +18,9 @@ from nltk.corpus import wordnet as wn
 from flask import Flask, render_template, request, json
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as BS
-
-app = Flask(__name__)
-
-@app.route("/")
-def main():
-    return render_template('index.html')
+import sys
+import json
+import cgi
 
 #constants for summary
 LANGUAGE = "english"
@@ -35,10 +32,10 @@ def calc_value(eval_sentences, ref_sentences):
     n_2 = rouge_2(eval_sentences, ref_sentences)
     n_3 = rouge_n(eval_sentences, ref_sentences, 3)
 
-    #print('n1 '+ str(n_1) +'\n')
-    #print('n2 ' + str(n_2) + '\n')
-    #print('n3 ' + str(n_3) + '\n')
-    #print('avg ' + str((n_1+n_2+n_3)/3))
+    print('n1 '+ str(n_1) +'\n')
+    print('n2 ' + str(n_2) + '\n')
+    print('n3 ' + str(n_3) + '\n')
+    print('avg ' + str((n_1+n_2+n_3)/3))
 
     return (n_1+n_2+n_3)/3
 
@@ -56,27 +53,6 @@ def max_r_value(Lsa_eval, Ed_eval, Lex_eval, ref):
     print("Maximum average Rouge test value " + str(max))
     return maxIndex
 
-def html_inj(input, html, id):
-    #load the html
-    with open("./templates/index.html") as inf:
-        txt = inf.read()
-        soup = BS(txt, 'html.parser')
-    soup.find(html, {"id": id}).replace_with('&lt;'+html+' id="'+id+'">'+input+'</'+html+'>')
-
-    print(soup.prettify(formatter=html))
-   # with open("./templates/index.html", "w") as outf:
-    #    outf.write(str(soup))
-
-    main()
-
-@app.route('/keywordCall', methods=['POST'])
-def keywordCall():
-    # read the posted values from the UI
-    input = request.form['inputSearch']
-    #print(input)
-    keyword(str(input))
-    return render_template('index.html')
-
 def keyword(input):
     # temp sentence
     temp_s = input
@@ -86,7 +62,7 @@ def keyword(input):
     token_s = nltk.word_tokenize(temp_s)
     # remove stopwords
     stopWords = set(stpwords.words('english'))
-    #print(stopWords)
+    print(stopWords)
     filtered_tokens = [word for word in token_s if word not in stopWords]
     filtered_tokens = []
     for word in token_s:
@@ -133,17 +109,6 @@ def keyword(input):
 
         # prints top 3
     print('TOP:', top_3)
-    #inject top keywords into html
-    try:
-        html_inj(top_3[2], 'h4', 'keyword3-h4')
-        html_inj(top_3[1], 'h4', 'keyword2-h4')
-        html_inj(top_3[0], 'h4', 'keyword1-h4')
-    except:
-        try:
-            html_inj(top_3[1], 'h4', 'keyword2-h4')
-            html_inj(top_3[0], 'h4', 'keyword1-h4')
-        except:
-            html_inj(top_3[0], 'h4', 'keyword1-h4')
     #find websites for top keywords
     query(top_3)
 def query(keywords):
@@ -153,9 +118,12 @@ def query(keywords):
     #the corresponding keyword, in this case return "no articles" to html
     #in the case an article is found, summarize and inject in html
     urls = []
+    urls_sent = []
     count = 0
     for i in keywords:
         urls.append('https://en.wikipedia.org/wiki/'+i)
+        urls_sent.append(summary(urls[i]))
+        '''
         page = urlopen(urls[count])
         soup = BS(page, 'html.parser')
         string = soup.find('b')
@@ -180,9 +148,12 @@ def query(keywords):
         elif count == 2:
             html_inj('No articles found', 'p', 'keyword3-p')
             print(count)
+        '''
         count +=1
+    # returns list of sentences
+    return urls_sent
+
 def summary(article_url):
-    text_file = open("storage.txt", "w")
     url = article_url
     #url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/potato"
     # url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/cabbage"
@@ -202,9 +173,8 @@ def summary(article_url):
                         ref_sentences.append(sentences)
                 except TypeError:
                     # catch type errors caused by annotated text ie h1, b, etc
-                    print("Calculating...")
+                    print("typeError")
                     continue
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     trim_ref_sentences.extend(Sentence(s, Tokenizer(LANGUAGE)) for s in ref_sentences)
 
     # or for plain text files
@@ -230,8 +200,6 @@ def summary(article_url):
     for sentence in summary_Lsa:
         # trim off super short - likely a few word sentences
         if len(sentence._text) > 20:
-            # write to storage
-            text_file.write(sentence)
             print(sentence)
             summary_Lsa_trim.append(sentence)
 
@@ -243,8 +211,6 @@ def summary(article_url):
     for sentence in summary_LexRank:
         # trim off super short - likely a few word sentences
         if len(sentence._text) > 20:
-            # write to storage
-            text_file.write(sentence)
             print(sentence)
             summary_LexRank_trim.append(sentence)
 
@@ -256,8 +222,6 @@ def summary(article_url):
     for sentence in summary_Edmundson:
         # trim off super short - likely a few word sentences
         if len(sentence._text) > 20:
-            # write to storage
-            text_file.write(sentence)
             print(sentence)
             summary_Edmundson_trim.append(sentence)
 
@@ -277,8 +241,24 @@ def summary(article_url):
     elif(best_summary==2):
         return summary_LexRank_trim
 
-    text_file.close()
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+def main():
+    fs = cgi.FieldStorage()
+    sys.stdout.write("Content-Type: application/json")
+    sys.stdout.write("\n")
+    sys.stdout.write("\n")
 
-if __name__ == "__main__":
-    app.run()
+    result = {}
+    result['success'] = True
+    result['keys'] = fs.keys()
+
+    d ={}
+    for k in fs.keys():
+        d[k] = fs.getvalue(k)
+
+    result['data'] = str(keyword(str(d)))
+    sys.stdout.write(json.dumps(result, indent=1))
+    sys.stdout.write("\n")
+
+    sys.stdout.close()
+
+main()
