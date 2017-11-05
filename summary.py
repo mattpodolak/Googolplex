@@ -39,6 +39,7 @@ def max_r_value(Lsa_eval, Ed_eval, Lex_eval, ref):
         if list[i] > max:
             max = list[i]
             maxIndex = i
+    print("Maximum average Rouge test value " + str(max))
     return maxIndex
 
 
