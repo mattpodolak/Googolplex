@@ -56,12 +56,22 @@ def max_r_value(Lsa_eval, Ed_eval, Lex_eval, ref):
     print("Maximum average Rouge test value " + str(max))
     return maxIndex
 
+def html_inj(input, html, id):
+    #load the html
+    with open("index.html") as inf:
+        txt = inf.read()
+        soup = BS(txt)
+    soup.find(html, {"id": id}).insert(input)
+
+    with open("index.html", "w") as outf:
+        outf.write(str(soup))
+
 @app.route('/keywordCall', methods=['POST'])
 def keywordCall():
     # read the posted values from the UI
     _input = request.form['inputSearch']
     print(_input)
-    #keyword(str(_input))
+    keyword(str(_input))
     return render_template('index.html')
 
 def keyword(input):
@@ -114,9 +124,9 @@ def keyword(input):
         # prints top 3
     #print('TOP:', top_3)
     query(top_3)
-    #html_inj(top_3[0],html_id)
-    #html_inj(top_3[1], html_id)
-    #html_inj(top_3[2], html_id)
+    html_inj(top_3[0], 'h4', 'keyword1-h4')
+    html_inj(top_3[1], 'h4', 'keyword2-h4')
+    html_inj(top_3[2], 'h4', 'keyword3-h4')
 def query(keywords):
     #checks wikipedia for an article about the keyword
     #uses beautiful soup to see if the following string is in the html
@@ -131,15 +141,25 @@ def query(keywords):
         soup = BS(page, 'html.parser')
         string = soup.find('b')
         if not string == "Wikipedia does not have an article with this exact name.":
-            summary(urls[count])
+            #inject summary
+            if count == 0:
+                html_inj(summary(urls[count]), 'p', 'keyword1-p')
+                print(count)
+            elif count == 1:
+                html_inj(summary(urls[count]), 'p', 'keyword2-p')
+                print(count)
+            elif count == 2:
+                html_inj(summary(urls[count]), 'p', 'keyword3-p')
+                print(count)
+
         elif count == 0:
-            #html_inj('No articles found', html_id)
+            html_inj('No articles found', 'p', 'keyword1-p')
             print(count)
         elif count == 1:
-            #html_inj('No articles found', html_id)
+            html_inj('No articles found', 'p', 'keyword2-p')
             print(count)
         elif count == 2:
-            #html_inj('No articles found', html_id)
+            html_inj('No articles found', 'p', 'keyword3-p')
             print(count)
         count +=1
 def summary(article_url):
@@ -221,5 +241,14 @@ def summary(article_url):
     models = {0: "Edmundson Model", 1: "Lsa Model", 2: "LexRank Model"}
     best_summary = max_r_value(summary_Lsa_trim, summary_LexRank_trim, summary_Edmundson_trim, trim_ref_sentences)
     print(models.get(best_summary) + ' is the best model according to an average of the Rouge_3, 2 and 1 tests')
+
+    #return the summary of the best model
+    if(best_summary == 0):
+        return summary_Edmundson_trim
+    elif(best_summary == 1):
+        return summary_Lsa_trim
+    elif(best_summary==2):
+        return summary_LexRank_trim
+
 if __name__ == "__main__":
     app.run()
