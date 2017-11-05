@@ -18,6 +18,7 @@ from nltk.corpus import wordnet as wn
 from flask import Flask, render_template, request, json
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as BS
+import html5lib
 
 app = Flask(__name__)
 
@@ -60,7 +61,7 @@ def html_inj(input, html, id):
     #load the html
     with open("./templates/index.html") as inf:
         txt = inf.read()
-        soup = BS(txt, 'html.parser')
+        soup = BS(txt, 'utf-8')
     soup.find(html, {"id": id}).replace_with('<'+html+' id="'+id+'">'+input+'</'+html+'>')
 
     with open("./templates/index.html", "w") as outf:
