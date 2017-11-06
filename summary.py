@@ -25,7 +25,7 @@ app = Flask(__name__)
 @app.route("/")
 def main():
     keys = keyword('boot_load')
-    summs = query(keys)
+    summs = query('boot_load')
     return render_template('index.html', key_1 = keys[0], key_2 = keys[1], key_3 = keys[2], p_1 = summs[0], p_2 = summs[1], p_3 = summs[2])
 
 #constants for summary
@@ -126,6 +126,10 @@ def keyword(input):
         # prints top 3
     print('TOP:', top_3)
     #return top keywords into html
+    if len(top_3) == 1:
+        top_3.append(' ')
+    if len(top_3) == 2:
+        top_3.append(' ')
     return top_3
 def query(keywords):
     if keywords == 'boot_load':
@@ -136,6 +140,7 @@ def query(keywords):
     #the corresponding keyword, in this case return "no articles" to html
     #in the case an article is found, summarize and inject in html
     urls = []
+    sums = []
     count = 0
     for i in keywords:
         print('Keyword: '+i+'\n')
@@ -147,12 +152,19 @@ def query(keywords):
         if not string == "Wikipedia does not have an article with this exact name.":
             #return summary
             print(count)
-            return summary(urls[count])
+            sums.append(summary(urls[count]))
         else:
             print(count)
-            return "No articles found"
+            sums.append("No articles found")
 
         count +=1
+
+    if len(sums) == 1:
+        sums.append(' ')
+    if len(sums) == 2:
+        sums.append(' ')
+    return sums
+
 def summary(article_url):
     url = article_url
     #url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/potato"
