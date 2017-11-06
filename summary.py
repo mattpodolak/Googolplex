@@ -126,11 +126,13 @@ def keyword(input):
         # prints top 3
     print('TOP:', top_3)
     #return top keywords into html
+    # fill in keywords list so len == 3, to fill html with something
     if len(top_3) == 1:
         top_3.append(' ')
     if len(top_3) == 2:
         top_3.append(' ')
     return top_3
+
 def query(keywords):
     if keywords == 'boot_load':
         return [' ', ' ', ' ']
@@ -143,6 +145,14 @@ def query(keywords):
     sums = []
     count = 0
     for i in keywords:
+        #if a null keyword is detected, was inserted because no more keywords to read
+        if i == ' ':
+            #fill in sums list so len == 3, to fill html with something
+            if len(sums) == 1:
+                sums.append(' ')
+            if len(sums) == 2:
+                sums.append(' ')
+            return sums
         print('Keyword: '+i+'\n')
         urls.append('https://en.wikipedia.org/wiki/'+i)
         page = urlopen(urls[count])
@@ -159,6 +169,7 @@ def query(keywords):
 
         count +=1
 
+    # fill in sums list so len == 3, to fill html with something
     if len(sums) == 1:
         sums.append(' ')
     if len(sums) == 2:
