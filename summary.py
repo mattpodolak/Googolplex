@@ -24,7 +24,9 @@ app = Flask(__name__)
 
 @app.route("/")
 def main():
-    return render_template('index.html')
+    keys = keyword('boot_load')
+    summs = query(keys)
+    return render_template('index.html', key_1 = keys[0], key_2 = keys[1], key_3 = keys[2], p_1 = summs[0], p_2 = summs[1], p_3 = summs[2])
 
 #constants for summary
 LANGUAGE = "english"
@@ -57,27 +59,17 @@ def max_r_value(Lsa_eval, Ed_eval, Lex_eval, ref):
     #print("Maximum average Rouge test value " + str(max))
     return maxIndex
 
-def html_inj(input, html, id):
-    #load the html
-    #with open("./templates/index.html") as inf:
-    #    txt = inf.read()
-    #    soup = BS(txt, 'html.parser')
-    #soup.find(html, {"id": id}).replace_with('<'+html+' id="'+id+'">'+input+'</'+html+'>')
-
-    #with open("./templates/index.html", "w") as outf:
-    #    outf.write(str(soup))
-
-    main()
-
 @app.route('/keywordCall', methods=['POST'])
 def keywordCall():
     # read the posted values from the UI
     input = request.form['inputSearch']
-    #print(input)
-    keyword(str(input))
-    return render_template('index.html')
+    keys = keyword(str(input))
+    summs = query(keys)
+    return render_template('index.html', key_1 = keys[0], key_2 = keys[1], key_3 = keys[2], p_1 = summs[0], p_2 = summs[1], p_3 = summs[2])
 
 def keyword(input):
+    if input == 'boot_load':
+        return [' ', ' ', ' ']
     # temp sentence
     temp_s = input
     # timer
@@ -87,7 +79,7 @@ def keyword(input):
     # remove stopwords
     stopWords = set(stpwords.words('english'))
     print(stopWords)
-    filtered_tokens = [word for word in token_s if word not in stopWords]
+    #filtered_tokens = [word for word in token_s if word not in stopWords]
     filtered_tokens = []
     for word in token_s:
         if word not in stopWords:
@@ -133,20 +125,11 @@ def keyword(input):
 
         # prints top 3
     print('TOP:', top_3)
-    #inject top keywords into html
-    try:
-        html_inj(top_3[2], 'h4', 'keyword3-h4')
-        html_inj(top_3[1], 'h4', 'keyword2-h4')
-        html_inj(top_3[0], 'h4', 'keyword1-h4')
-    except:
-        try:
-            html_inj(top_3[1], 'h4', 'keyword2-h4')
-            html_inj(top_3[0], 'h4', 'keyword1-h4')
-        except:
-            html_inj(top_3[0], 'h4', 'keyword1-h4')
-    #find websites for top keywords
-    query(top_3)
+    #return top keywords into html
+    return top_3
 def query(keywords):
+    if keywords == 'boot_load':
+        return [' ', ' ', ' ']
     #checks wikipedia for an article about the keyword
     #uses beautiful soup to see if the following string is in the html
     # if it is in the html - it signifies that no page was found for
@@ -155,34 +138,20 @@ def query(keywords):
     urls = []
     count = 0
     for i in keywords:
+        print('Keyword: '+i+'\n')
         urls.append('https://en.wikipedia.org/wiki/'+i)
         page = urlopen(urls[count])
         soup = BS(page, 'html.parser')
         string = soup.find('b')
+        # check if a null wikipedia page
         if not string == "Wikipedia does not have an article with this exact name.":
-            #inject summary
-            if count == 0:
-                html_inj(str(summary(urls[count])), 'p', 'keyword1-p')
-                print(count)
-            elif count == 1:
-                html_inj(str(summary(urls[count])), 'p', 'keyword2-p')
-                print(count)
-            elif count == 2:
-                html_inj(str(summary(urls[count])), 'p', 'keyword3-p')
-                print(count)
+            #return summary
+            print(count)
+            return summary(urls[count])
+        else:
+            print(count)
+            return "No articles found"
 
-        elif count == 0:
-            print("No articles found")
-            html_inj('No articles found', 'p', 'keyword1-p')
-            print(count)
-        elif count == 1:
-            print("No articles found")
-            html_inj('No articles found', 'p', 'keyword2-p')
-            print(count)
-        elif count == 2:
-            print("No articles found")
-            html_inj('No articles found', 'p', 'keyword3-p')
-            print(count)
         count +=1
 def summary(article_url):
     url = article_url
