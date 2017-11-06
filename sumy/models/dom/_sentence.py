@@ -37,9 +37,12 @@ class Sentence(object):
     def __unicode__(self):
         return self._text
 
+    #def __repr__(self):
+    #    return to_string("<%s: %s>") % (
+    #        "Heading" if self._is_heading else "Sentence",
+    #        self.__str__()
+    #    )
     def __repr__(self):
-        return to_string("<%s: %s>") % (
-            "Heading" if self._is_heading else "Sentence",
+        return to_string("%s") % (
             self.__str__()
         )
-

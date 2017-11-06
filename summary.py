@@ -65,7 +65,7 @@ def keywordCall():
     input = request.form['inputSearch']
     keys = keyword(str(input))
     summs = query(keys)
-    return render_template('index.html', key_1 = keys[0], key_2 = keys[1], key_3 = keys[2], p_1 = summs[0], p_2 = summs[1], p_3 = summs[2])
+    return render_template('index.html', key_1 = str(keys[0]), key_2 = str(keys[1]), key_3 = str(keys[2]), p_1 = str(summs[0]), p_2 = str(summs[1]), p_3 = str(summs[2]))
 
 def keyword(input):
     if input == 'boot_load':
