@@ -24,13 +24,13 @@ app = Flask(__name__)
 
 @app.route("/")
 def main():
-    keys = keyword('boot_load')
-    summs = query('boot_load')
-    return render_template('index.html', key_1 = keys[0], key_2 = keys[1], key_3 = keys[2], p_1 = summs[0], p_2 = summs[1], p_3 = summs[2])
+    get_url = request.args.get('url')
+    summs = summary(get_url)
+    return render_template('index.html', p_1 = summs)
 
 #constants for summary
 LANGUAGE = "english"
-SENTENCES_COUNT = 4
+SENTENCES_COUNT = 5
 
 #calculate ROUGE_N values for n = 1, 2, 3
 def calc_value(eval_sentences, ref_sentences):
@@ -58,123 +58,6 @@ def max_r_value(Lsa_eval, Ed_eval, Lex_eval, ref):
             maxIndex = i
     #print("Maximum average Rouge test value " + str(max))
     return maxIndex
-
-@app.route('/keywordCall', methods=['POST'])
-def keywordCall():
-    # read the posted values from the UI
-    input = request.form['inputSearch']
-    keys = keyword(str(input))
-    summs = query(keys)
-    return render_template('index.html', key_1 = str(keys[0]), key_2 = str(keys[1]), key_3 = str(keys[2]), p_1 = str(summs[0]), p_2 = str(summs[1]), p_3 = str(summs[2]))
-
-def keyword(input):
-    if input == 'boot_load':
-        return [' ', ' ', ' ']
-    # temp sentence
-    temp_s = input
-    # timer
-    #start = timeit.default_timer()
-    # tokenize
-    token_s = nltk.word_tokenize(temp_s)
-    # remove stopwords
-    stopWords = set(stpwords.words('english'))
-    print(stopWords)
-    #filtered_tokens = [word for word in token_s if word not in stopWords]
-    filtered_tokens = []
-    for word in token_s:
-        if word not in stopWords:
-            filtered_tokens.append(word)
-    # ini print
-    print('tokens:', token_s)
-    print('filtered:', filtered_tokens)
-
-    # dummy var
-    prob_list = []
-    comp_list = []
-    top_3 = []
-
-    # loops through for comparisons
-    filtered_iter = iter(filtered_tokens)
-    for i in range(len(filtered_tokens)):
-        total = 0
-        elem = next(filtered_iter)
-
-        # loops through phrase with each keyword
-        allsyns1 = set(ss for word in token_s for ss in wn.synsets(word))
-        allsyns2 = set(ss for word in elem for ss in wn.synsets(word))
-        full_list = [(wn.wup_similarity(s1, s2) or 0, s1, s2) for s1, s2 in product(allsyns1, allsyns2)]
-        score_list = iter(full_list)
-
-        # get avg score
-        for j in range(len(full_list)):
-            total += float(next(score_list)[0])
-        print('word:', elem, '| weighted avg:', total / len(full_list))
-
-        # store dummy
-        prob_list.append(float(total / len(full_list)))
-        comp_list.append(elem)
-
-    # grab min(3, #of elements)
-    for i in range(min(3, len(prob_list))):
-        curr_max = prob_list.index(max(prob_list))
-        top_3.append(comp_list[curr_max])
-
-        prob_list.pop(curr_max)
-        comp_list.pop(curr_max)
-
-
-        # prints top 3
-    print('TOP:', top_3)
-    #return top keywords into html
-    # fill in keywords list so len == 3, to fill html with something
-    if len(top_3) == 1:
-        top_3.append(' ')
-    if len(top_3) == 2:
-        top_3.append(' ')
-    return top_3
-
-def query(keywords):
-    if keywords == 'boot_load':
-        return [' ', ' ', ' ']
-    #checks wikipedia for an article about the keyword
-    #uses beautiful soup to see if the following string is in the html
-    # if it is in the html - it signifies that no page was found for
-    #the corresponding keyword, in this case return "no articles" to html
-    #in the case an article is found, summarize and inject in html
-    urls = []
-    sums = []
-    count = 0
-    for i in keywords:
-        #if a null keyword is detected, was inserted because no more keywords to read
-        if i == ' ':
-            #fill in sums list so len == 3, to fill html with something
-            if len(sums) == 1:
-                sums.append(' ')
-            if len(sums) == 2:
-                sums.append(' ')
-            return sums
-        print('Keyword: '+i+'\n')
-        urls.append('https://en.wikipedia.org/wiki/'+i)
-        page = urlopen(urls[count])
-        soup = BS(page, 'html.parser')
-        string = soup.find('b')
-        # check if a null wikipedia page
-        if not string == "Wikipedia does not have an article with this exact name.":
-            #return summary
-            print(count)
-            sums.append(summary(urls[count]))
-        else:
-            print(count)
-            sums.append("No articles found")
-
-        count +=1
-
-    # fill in sums list so len == 3, to fill html with something
-    if len(sums) == 1:
-        sums.append(' ')
-    if len(sums) == 2:
-        sums.append(' ')
-    return sums
 
 def summary(article_url):
     url = article_url
@@ -261,13 +144,37 @@ def summary(article_url):
     best_summary = max_r_value(summary_Lsa_trim, summary_LexRank_trim, summary_Edmundson_trim, trim_ref_sentences)
     print(models.get(best_summary) + ' is the best model according to an average of the Rouge_3, 2 and 1 tests')
 
+    #clean up Edmundson summary
+    summary_Edmundson_clean = []
+    for sentence in summary_Edmundson_trim:
+        sentence = str(sentence)
+        sentence = sentence.replace('<Sentence: ', '')
+        sentence = sentence.replace('>', '')
+        summary_Edmundson_clean.append(sentence)
+
+    #clean up Lsa summary
+    summary_Lsa_clean = []
+    for sentence in summary_Lsa_trim:
+        sentence = str(sentence)
+        sentence = sentence.replace('<Sentence: ', '')
+        sentence = sentence.replace('>', '')
+        summary_Lsa_clean.append(sentence)
+
+    #clean up LexRank summary
+    summary_LexRank_clean = []
+    for sentence in summary_LexRank_trim:
+        sentence = str(sentence)
+        sentence = sentence.replace('<Sentence: ', '')
+        sentence = sentence.replace('>', '')
+        summary_LexRank_clean.append(sentence)
+
     #return the summary of the best model
-    if(best_summary == 0):
-        return summary_Edmundson_trim
+    if(best_summary==0):
+        return summary_Edmundson_clean
     elif(best_summary == 1):
-        return summary_Lsa_trim
+        return summary_Lsa_clean
     elif(best_summary==2):
-        return summary_LexRank_trim
+        return summary_LexRank_clean
 
 if __name__ == "__main__":
     app.run()
