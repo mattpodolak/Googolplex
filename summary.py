@@ -178,12 +178,8 @@ def query(keywords):
 
 def summary(article_url):
     url = article_url
-    #url = "https://udarajay.com/applied-machine-learning-the-less-confusing-guide/"
-    # url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/cabbage"
-    # url = "http://www.encyclopedia.com/medicine/diseases-and-conditions/pathology/accident"
-    # url = "http://www.encyclopedia.com/earth-and-environment/atmosphere-and-weather/atmospheric-and-space-sciences-atmosphere/air"
     parser = HtmlParser.from_url(url, Tokenizer(LANGUAGE))
-
+    file = open('testfile.txt', 'w')
     # create a list of reference sentences to calculate ROUGE_N scores
     ref_sentences = []
     trim_ref_sentences = []
@@ -198,6 +194,8 @@ def summary(article_url):
                     # catch type errors caused by annotated text ie h1, b, etc
                     print("Calculating...")
                     continue
+    file.close()
+
     trim_ref_sentences.extend(Sentence(s, Tokenizer(LANGUAGE)) for s in ref_sentences)
 
     # or for plain text files
