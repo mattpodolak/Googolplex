@@ -178,7 +178,6 @@ def query(keywords):
 
 def summary(article_url):
     url = article_url
-    url = ''
     parser = HtmlParser.from_url(url, Tokenizer(LANGUAGE))
     file = open('testfile.txt', 'w')
     # create a list of reference sentences to calculate ROUGE_N scores
