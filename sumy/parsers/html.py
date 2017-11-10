@@ -74,14 +74,17 @@ class HtmlParser(DocumentParser):
         print(str(self._article.main_text[0][0][0]))
 
         temp = []
+        count_i = 0
         for i in self._article.main_text:
             temp2 = ()
+            count_j = 0
             for j in i:
-                if len(j[0].split()) > 2 and not j[0] == '(unranked)':
-                    temp2 = temp2+j
-            temp.append(temp2)
+                if len(j[0].split()) == 2 or j[0] == '(unranked)':
+                    del self._article.main_text[count_i][count_j]
+                else:
+                    count_j+=1
+            count_i +=1
 
-        print(temp)
 
     @cached_property
     def significant_words(self):
