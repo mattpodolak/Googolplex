@@ -178,27 +178,27 @@ def query(keywords):
 
 def summary(article_url):
     url = article_url
-    #url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/potato"
-    # url = "http://www.encyclopedia.com/plants-and-animals/plants/plants/cabbage"
-    # url = "http://www.encyclopedia.com/medicine/diseases-and-conditions/pathology/accident"
-    # url = "http://www.encyclopedia.com/earth-and-environment/atmosphere-and-weather/atmospheric-and-space-sciences-atmosphere/air"
     parser = HtmlParser.from_url(url, Tokenizer(LANGUAGE))
 
+    #NEEEDS FIXING BADLY WTF
     # create a list of reference sentences to calculate ROUGE_N scores
     ref_sentences = []
     trim_ref_sentences = []
     for paragraph in parser._article.main_text:
-        for sections in paragraph:
-            for sentences in sections:
-                try:
+       for sections in paragraph:
+           for sentences in sections:
+               try:
                     if len(sentences) > 35:
-                        # trim off super short - likely a few word sentences
-                        ref_sentences.append(sentences)
-                except TypeError:
-                    # catch type errors caused by annotated text ie h1, b, etc
-                    print("Calculating...")
-                    continue
+                        #trim off super short - likely a few word sentences
+                       ref_sentences.append(sentences)
+                       print(sentences)
+               except TypeError:
+                   # catch type errors caused by annotated text ie h1, b, etc
+                   print("Calculating...")
+                   continue
+
     trim_ref_sentences.extend(Sentence(s, Tokenizer(LANGUAGE)) for s in ref_sentences)
+    print(trim_ref_sentences)
 
     # or for plain text files
     # parser = PlaintextParser.from_file("document.txt", Tokenizer(LANGUAGE))
