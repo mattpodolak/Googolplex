@@ -37,53 +37,53 @@ class HtmlParser(DocumentParser):
         super(HtmlParser, self).__init__(tokenizer)
         self._article = Article(html_content, url)
 
-        # #count number of paragraphs on page
-        # self.desired_ct = 2
-        # self.paragraph_ct = 0
-        # self.correct_paragraph_ct = 0
-        #
-        # #count paragraphs
-        # for paragraph in self._article.main_text:
-        #     self.paragraph_ct+=1
-        #
-        # #check if a lot of paragraphs, usually intro material will be in the first couple paragraphs
-        # if self.paragraph_ct > self.desired_ct:
-        #     #calculate number of paragraphs to use
-        #     self.correct_paragraph_ct = int(self.paragraph_ct * 0.3 // 10)
-        #     #if correction results in too few paragraphs - opt to use desired number
-        #     if self.correct_paragraph_ct <= 1:
-        #         self.correct_paragraph_ct = self.desired_ct
-        # #if less than desired and more than 0, already at correct paragraph count
-        # elif self.paragraph_ct >0:
-        #     self.correct_paragraph_ct = self.paragraph_ct
-        #
-        # #delete excess paragraphs
-        # diff = self.paragraph_ct - self.correct_paragraph_ct
-        # while diff > 0:
-        #     del self._article.main_text[diff+self.correct_paragraph_ct-1]
-        #     diff-=1
+        #count number of paragraphs on page
+        self.desired_ct = 2
+        self.paragraph_ct = 0
+        self.correct_paragraph_ct = 0
 
-        #troubleshoot
-        print(str(type(self._article.main_text)))
-        print(self._article.main_text)
-        print(str(type(self._article.main_text[0])))
-        print(str(self._article.main_text[0]))
-        print(str(type(self._article.main_text[0][0])))
-        print(str(self._article.main_text[0][0]))
-        print(str(type(self._article.main_text[0][0][0])))
-        print(str(self._article.main_text[0][0][0]))
+        #count paragraphs
+        for paragraph in self._article.main_text:
+            self.paragraph_ct+=1
 
-        temp = []
-        count_i = 0
-        for i in self._article.main_text:
-            temp2 = ()
-            count_j = 0
-            for j in i:
-                if len(j[0].split()) == 2 or j[0] == '(unranked)':
-                    del self._article.main_text[count_i][count_j]
-                else:
-                    count_j+=1
-            count_i +=1
+        #check if a lot of paragraphs, usually intro material will be in the first couple paragraphs
+        if self.paragraph_ct > self.desired_ct:
+            #calculate number of paragraphs to use
+            self.correct_paragraph_ct = int(self.paragraph_ct * 0.3 // 10)
+            #if correction results in too few paragraphs - opt to use desired number
+            if self.correct_paragraph_ct <= 1:
+                self.correct_paragraph_ct = self.desired_ct
+        #if less than desired and more than 0, already at correct paragraph count
+        elif self.paragraph_ct >0:
+            self.correct_paragraph_ct = self.paragraph_ct
+
+        #delete excess paragraphs
+        diff = self.paragraph_ct - self.correct_paragraph_ct
+        while diff > 0:
+            del self._article.main_text[diff+self.correct_paragraph_ct-1]
+            diff-=1
+
+        # #troubleshoot
+        # print(str(type(self._article.main_text)))
+        # print(self._article.main_text)
+        # print(str(type(self._article.main_text[0])))
+        # print(str(self._article.main_text[0]))
+        # print(str(type(self._article.main_text[0][0])))
+        # print(str(self._article.main_text[0][0]))
+        # print(str(type(self._article.main_text[0][0][0])))
+        # print(str(self._article.main_text[0][0][0]))
+
+        # temp = []
+        # count_i = 0
+        # for i in self._article.main_text:
+        #     temp2 = ()
+        #     count_j = 0
+        #     for j in i:
+        #         if len(j[0].split()) == 2 or j[0] == '(unranked)':
+        #             del self._article.main_text[count_i][count_j]
+        #         else:
+        #             count_j+=1
+        #     count_i +=1
 
 
     @cached_property

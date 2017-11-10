@@ -180,7 +180,31 @@ def summary(article_url):
     url = article_url
     parser = HtmlParser.from_url(url, Tokenizer(LANGUAGE))
 
-    #NEEEDS FIXING BADLY WTF
+    page = urlopen(url)
+    soup = BS(page, 'html.parser')
+    soup.prettify('utf-8')
+    #soup = str(soup)
+    raw = soup.getText()
+    print('Type '+ str(type(raw)))
+    print(raw[0])
+    print(len(raw[0]))
+    print(str(type(raw[0])))
+    raw = raw.split('\n')
+    new = []
+    #MAYBE TOKENIZE AND COUNT TOKENS
+    for line in raw:
+        print('fire')
+        print(line)
+        if len(line.split()) > 15:
+            print('line '+line)
+            new.append(line)
+    print(new)
+    # file = open('testfile.txt', 'w')
+    # for i in new:
+    #     file.write(new[i])
+    # file.close()
+
+    #NEEDS FIXING BADLY
     # create a list of reference sentences to calculate ROUGE_N scores
     ref_sentences = []
     trim_ref_sentences = []
