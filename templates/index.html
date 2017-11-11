@@ -1,146 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
 
-<head>
-    <meta charset="utf-8">
-    <title>Googolplex</title>
+<!--<head>-->
+    <!--<meta charset="utf-8">-->
+    <!--<title>Googolplex</title>-->
 
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <!--<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">-->
+    <!--<link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">-->
+    <!--<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">-->
 
-</head>
+<!--</head>-->
 
-<body>
+<!--<body>-->
 
-    <div class="container">
-        <div class="header">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                </ul>
-            </nav>
-            <h3 class="text-muted">Googolplex</h3>
-        </div>
+    <!--<div class="container">-->
+        <!--<div class="header">-->
+            <!--<nav>-->
+                <!--<ul class="nav nav-pills pull-right">-->
+                <!--</ul>-->
+            <!--</nav>-->
+            <!--<h3 class="text-muted">Googolplex</h3>-->
+        <!--</div>-->
 
-        <div class="jumbotron">
-             <form class="form-search" action="{{ url_for('keywordCall') }}" method="post">
-                 <div class = "logo-img">
-                     <img class ="logo-img2" src="{{url_for('static', filename='randlogo3.png')}}" />
-                 </div>
-                 <label for="inputSearch" class="sr-only">Search for a topic</label>
-                 <input type="text" name="inputSearch" id="inputSearch" class="form-control" placeholder="Search for a topic" required autofocus>
-                 <input type="submit" id="btnSearch" class="btn btn-lg btn-primary btn-block" >
-             </form>
-        </div>
-
-        <table align="center">
-            <tr>
-                <script type="text/javascript">
-                    var fs = require("fs");
-                    fs.readFile("./storage.txt", function(text){
-                        var text = fs.readFileSync("./storage.txt").toString('utf-8);
-                    }
+        <!--<div class="jumbotron">-->
+             <!--<div class="row marketing">-->
+                <!--<div class="col-lg-8 offset-lg-2 shade">-->
+                    <!--<p id="keyword1-p">-->
+                        {{p_1}}
+                    <!--</p>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
 
 
-                </script>
-            </tr>
-        </table>
 
-        <div class="row marketing">
-            <div class="col-lg-8 offset-lg-2 shade">
-                <h4 id="keyword1-h4">{{key_1}}</h4>
-                <p id="keyword1-p">{{p_1}}</p>
-            </div>
-            <div class="col-lg-8 offset-lg-2 shade">
-                <h4 id="keyword2-h4">{{key_2}}</h4>
-                <p id="keyword2-p">{{p_2}}</p>
-            </div>
-            <div class="col-lg-8 offset-lg-2 shade">
-                <h4 id="keyword3-h4">{{key_3}}</h4>
-                <p id="keyword3">{{p_3}}</p>
-            </div>
-        </div>
+        <!--<footer class="footer">-->
+            <!--<p>Copyright: Googolplex 2017</p>-->
+        <!--</footer>-->
 
-        <footer class="footer">
-            <p>Copyright: Googolplex 2017</p>
-        </footer>
+    <!--</div>-->
+    <!--<style>-->
+    <!--#inputSearch{-->
+        <!--max-width: 300px !important;-->
+        <!--margin: 0 auto;-->
+    <!--}-->
+    <!--#btnSearch{-->
+        <!--max-width: 300px !important;-->
+        <!--padding-top:4px;-->
+        <!--padding-bottom:4px;-->
+        <!--padding-left:8px;-->
+        <!--padding-right:8px;-->
+        <!--margin: 0 auto;-->
+        <!--margin-top: 10px;-->
+        <!--cursor: pointer !important;-->
+    <!--}-->
 
-    </div>
-    <style>
-    #inputSearch{
-        max-width: 300px !important;
-        margin: 0 auto;
-    }
-    #btnSearch{
-        max-width: 300px !important;
-        padding-top:4px;
-        padding-bottom:4px;
-        padding-left:8px;
-        padding-right:8px;
-        margin: 0 auto;
-        margin-top: 10px;
-        cursor: pointer !important;
-    }
+    <!--#btnWrap{-->
+        <!--margin-top: 20px;-->
+    <!--}-->
+    <!--#btnWrap:hover{-->
+        <!--cursor: pointer !important;-->
+    <!--}-->
+    <!--.form-search{-->
+        <!--margin-top:40px;-->
+    <!--}-->
+    <!--.form-control:focus {-->
+        <!--color: #495057;-->
+        <!--background-color: #fff;-->
+        <!--border: none;-->
+        <!--outline: 0;-->
+        <!--box-shadow: 1px 1px 1px #888888 !important;-->
+    <!--}-->
+    <!--.form-control{-->
+        <!--color: #495057;-->
+        <!--background-color: #fff;-->
+        <!--border: none;-->
+        <!--outline: 0;-->
+        <!--box-shadow: 1px 1px 1px #AAAAAA !important;-->
+    <!--}-->
 
-    #btnWrap{
-        margin-top: 20px;
-    }
-    #btnWrap:hover{
-        cursor: pointer !important;
-    }
-    .form-search{
-        margin-top:40px;
-    }
-    .form-control:focus {
-        color: #495057;
-        background-color: #fff;
-        border: none;
-        outline: 0;
-        box-shadow: 1px 1px 1px #888888 !important;
-    }
-    .form-control{
-        color: #495057;
-        background-color: #fff;
-        border: none;
-        outline: 0;
-        box-shadow: 1px 1px 1px #AAAAAA !important;
-    }
+    <!--.jumbotron{-->
+        <!--padding-top:30px;-->
+        <!--margin-top:20px;-->
+        <!--box-shadow: 3px 3px 3px #888888 !important;-->
+    <!--}-->
+    <!--.form-search{-->
+        <!--align: centre;-->
+    <!--}-->
 
-    .jumbotron{
-        padding-top:30px;
-        margin-top:20px;
-        box-shadow: 3px 3px 3px #888888 !important;
-    }
-    .form-search{
-        align: centre;
-    }
+    <!--.container{-->
+        <!--max-width: 800px;-->
+    <!--}-->
 
-    .container{
-        max-width: 800px;
-    }
+    <!--.text-muted{-->
+        <!--margin-top:8px;-->
+    <!--}-->
 
-    .text-muted{
-        margin-top:8px;
-    }
+    <!--.logo-img{-->
+        <!--max-width:200px;-->
+        <!--margin: 0 auto;-->
+        <!--margin-top:10px;-->
+        <!--margin-bottom:30px;-->
+    <!--}-->
+    <!--.logo-img2{-->
+        <!--max-width:200px;-->
+    <!--}-->
+    <!--.footer{-->
+        <!--margin-top: 50px;-->
+    <!--}-->
+    <!--.shade{-->
+         <!--//box-shadow: 2px 2px 1px #AAA !important;-->
+         <!--margin-bottom: 5px;-->
+         <!--padding: 8px;-->
+    <!--}-->
+    <!--</style>-->
+<!--</body>-->
 
-    .logo-img{
-        max-width:200px;
-        margin: 0 auto;
-        margin-top:10px;
-        margin-bottom:30px;
-    }
-    .logo-img2{
-        max-width:200px;
-    }
-    .footer{
-        margin-top: 50px;
-    }
-    .shade{
-         //box-shadow: 2px 2px 1px #AAA !important;
-         margin-bottom: 5px;
-         padding: 8px;
-    }
-    </style>
-</body>
-
-</html>
+<!--</html>-->
